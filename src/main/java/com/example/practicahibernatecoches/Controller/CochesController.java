@@ -5,13 +5,18 @@ import com.example.practicahibernatecoches.dao.CocheDaoImpl;
 import com.example.practicahibernatecoches.model.Coche;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 import org.hibernate.cfg.Configuration;
 
 import javafx.event.ActionEvent;
 import javafx.scene.input.MouseEvent;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jboss.jandex.Main;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +39,9 @@ public class CochesController {
     private Button btnImportar;
 
     @FXML
+    private Button btnBuscar;
+
+    @FXML
     private ComboBox<String> fxTipo;
 
     @FXML
@@ -51,7 +59,7 @@ public class CochesController {
     @FXML
     private TextField txtModelo;
 
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
     private CocheDao cocheDao;
 
@@ -196,14 +204,21 @@ public class CochesController {
     }
 
     @FXML
-    void onFinClick(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmación de Cierre");
-        alert.setHeaderText("¿Estás seguro de que deseas cerrar la aplicación?");
+    void onClicBuscar(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/practicahibernatecoches/buscar.fxml"));
+            Parent root = loader.load();
 
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            Platform.exit();
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) btnBuscar.getScene().getWindow();
+            stage.setScene(scene);
+
+            BuscarController controller = loader.getController();
+            controller.setSessionFactory(sessionFactory);
+
+        }catch (Exception e) {
+            System.out.println(e.getMessage());
+
         }
     }
 

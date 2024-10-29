@@ -24,24 +24,6 @@ public class CocheDaoImpl implements CocheDao {
     }
 
     @Override
-    public Coche getCocheById(int id, Session session) {
-        Transaction transaction = null;
-        Coche coche = null;
-        try {
-            transaction = session.beginTransaction();
-            coche = session.get(Coche.class, id);
-            transaction.commit();
-
-
-        } catch (Exception e) {
-
-            if(transaction != null)
-                transaction.rollback();
-        }
-        return coche;
-    }
-
-    @Override
     public List<Coche> getAllCoche(Session session) {
         Transaction transaction = null;
         List<Coche> coches = null;
@@ -80,5 +62,20 @@ public class CocheDaoImpl implements CocheDao {
             if(transaction != null)
                 transaction.rollback();
         }
+    }
+
+    @Override
+    public Coche buscarCoche(String matricula, Session session) {
+        Transaction transaction = null;
+        Coche coche = null;
+        try{
+            transaction = session.beginTransaction();
+            coche = session.get(Coche.class, matricula);
+            transaction.commit();
+        } catch (Exception e){
+            if (transaction!= null)
+                transaction.rollback();
+        }
+        return coche;
     }
 }
