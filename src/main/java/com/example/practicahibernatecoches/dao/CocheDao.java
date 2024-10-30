@@ -7,13 +7,11 @@ import java.util.List;
 
 public interface CocheDao {
 
-	void  saveCoche(Coche coche, Session session);
+	void saveCoche(Coche coche, Session session);
 
 	List<Coche> getAllCoche(Session session);
 
 	void updateCoche(Coche coche, Session session);
 
 	void deleteCocheById(int id,Session session);
-
-	Coche buscarCoche(String matricula, Session session);
 }

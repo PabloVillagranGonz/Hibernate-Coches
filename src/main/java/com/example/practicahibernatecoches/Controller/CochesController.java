@@ -3,20 +3,16 @@ package com.example.practicahibernatecoches.Controller;
 import com.example.practicahibernatecoches.dao.CocheDao;
 import com.example.practicahibernatecoches.dao.CocheDaoImpl;
 import com.example.practicahibernatecoches.model.Coche;
-import javafx.application.Platform;
+
+import com.example.practicahibernatecoches.util.HibernateUtil;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 import org.hibernate.cfg.Configuration;
 
 import javafx.event.ActionEvent;
 import javafx.scene.input.MouseEvent;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jboss.jandex.Main;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,9 +35,6 @@ public class CochesController {
     private Button btnImportar;
 
     @FXML
-    private Button btnBuscar;
-
-    @FXML
     private ComboBox<String> fxTipo;
 
     @FXML
@@ -59,7 +52,7 @@ public class CochesController {
     @FXML
     private TextField txtModelo;
 
-    private final SessionFactory sessionFactory;
+    private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 
     private CocheDao cocheDao;
 
@@ -194,45 +187,31 @@ public class CochesController {
             alert.showAndWait();
         } else {
             try (Session session = sessionFactory.openSession()) {
-                cocheDao.saveCoche(cochenuevo, session);
-                cargarCoches();
-                limpiarCampos();
+                    cocheDao.saveCoche(cochenuevo, session);
+                    cargarCoches();
+                    limpiarCampos();
+
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Error al guardar el coche, ya existe un coche con esa matricula.");
+                alert.showAndWait();
             }
-        }
-    }
-
-    @FXML
-    void onClicBuscar(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/practicahibernatecoches/buscar.fxml"));
-            Parent root = loader.load();
-
-            Scene scene = new Scene(root);
-            Stage stage = (Stage) btnBuscar.getScene().getWindow();
-            stage.setScene(scene);
-
-            BuscarController controller = loader.getController();
-            controller.setSessionFactory(sessionFactory);
-
-        }catch (Exception e) {
-            System.out.println(e.getMessage());
-
         }
     }
 
     @FXML
     void onImportar2(MouseEvent event) {
-        try{
+        try {
             Coche coche = listCoche.getSelectionModel().getSelectedItem();
-            if (coche != null){
+            if (coche != null) {
                 txtMatricula.setText(coche.getMatricula());
                 txtMarca.setText(coche.getMarca());
                 txtModelo.setText(coche.getModelo());
                 fxTipo.setValue(coche.getTipo());
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
@@ -241,5 +220,4 @@ public class CochesController {
     void OnClickImportar(ActionEvent event) {
         cargarCoches();
     }
-
 }

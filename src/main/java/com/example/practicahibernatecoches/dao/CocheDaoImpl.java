@@ -4,6 +4,7 @@ import com.example.practicahibernatecoches.model.Coche;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CocheDaoImpl implements CocheDao {
@@ -32,20 +33,21 @@ public class CocheDaoImpl implements CocheDao {
             coches = session.createQuery("from Coche", Coche.class).list();
             transaction.commit();
         } catch (Exception e) {
-            if(transaction != null)
+            if (transaction != null)
                 transaction.rollback();
         }
-        return coches;    }
+        return coches;
+    }
 
     @Override
     public void updateCoche(Coche coche, Session session) {
         Transaction transaction = null;
-        try{
+        try {
             transaction = session.beginTransaction();
             session.saveOrUpdate(coche);
             transaction.commit();
         } catch (Exception e) {
-            if(transaction != null)
+            if (transaction != null)
                 transaction.rollback();
         }
     }
@@ -59,23 +61,8 @@ public class CocheDaoImpl implements CocheDao {
             session.delete(coche);
             transaction.commit();
         } catch (Exception e) {
-            if(transaction != null)
+            if (transaction != null)
                 transaction.rollback();
         }
-    }
-
-    @Override
-    public Coche buscarCoche(String matricula, Session session) {
-        Transaction transaction = null;
-        Coche coche = null;
-        try{
-            transaction = session.beginTransaction();
-            coche = session.get(Coche.class, matricula);
-            transaction.commit();
-        } catch (Exception e){
-            if (transaction!= null)
-                transaction.rollback();
-        }
-        return coche;
     }
 }
